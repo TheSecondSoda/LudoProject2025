@@ -4,6 +4,7 @@ using Backend.Services.PieceService.Interfaces;
 using Common.DTOs;
 using Common.Enums;
 using FluentAssertions;
+using System.Collections;
 
 namespace UnitTests.PieceTests
 {
@@ -36,11 +37,10 @@ namespace UnitTests.PieceTests
 		}
 
 		[Theory]
-		[InlineData("IsInPlay", false, "Piece is in base, not on board")]
-		[InlineData("IsFinished", true, "Piece is in goal, and can't be moved anymore")]
+		[ClassData(typeof(InvalidMovePieceTestData))]
 		public void TestInvalidMovePieceMethod(
-			string parameterCausingInvalidOperation, 
-			bool invalidValue, 
+			string parameterCausingInvalidOperation,
+			bool invalidValue,
 			string expectedMessage)
 		{
 			// Arrange
@@ -71,9 +71,7 @@ namespace UnitTests.PieceTests
 		}
 
 		[Theory]
-		[InlineData(ColourEnum.Yellow, 1)]
-		[InlineData(ColourEnum.None, 52)]
-		[InlineData(ColourEnum.None, 891283)]
+		[MemberData(nameof(SuccessfulMovePieceOutTestData), parameters: 4)]
 		public void TestSuccessfulMovePieceOut(ColourEnum posIndexColour, int posIndexIndex)
 		{
 			// Arrange
@@ -150,5 +148,31 @@ namespace UnitTests.PieceTests
 			piece.IsInPlay.Should().BeFalse();
 			piece.PosIndex.Should().BeNull();
 		}
+
+		public static IEnumerable<object[]> SuccessfulMovePieceOutTestData(int numTests)
+		{
+			var allData = new List<object[]>
+			{
+				new object[] { ColourEnum.Yellow, 1 },
+				new object[] { ColourEnum.None, 52 },
+				new object[] { ColourEnum.None, 891283 },
+				new object[] { ColourEnum.Blue, int.MinValue },
+				new object[] { ColourEnum.Red, int.MaxValue },
+				new object[] { ColourEnum.None, int.MaxValue-400 },
+			};
+
+			return allData.Take(numTests);
+		}
 	}
+}
+
+public class InvalidMovePieceTestData : IEnumerable<object[]>
+{
+	public IEnumerator<object[]> GetEnumerator()
+	{
+		yield return new object[] { "IsInPlay", false, "Piece is in base, not on board" };
+		yield return new object[] { "IsFinished", true, "Piece is in goal, and can't be moved anymore" };
+	}
+
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

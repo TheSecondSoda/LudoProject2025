@@ -7,7 +7,7 @@ namespace Backend.Services.PlayerServices
 {
     public class PlayerService : IPlayerService
     {
-        Player IPlayerService.GetBasePiece()
+        Piece IPlayerService.GetBasePiece()
         {
             throw new NotImplementedException();
         }
