@@ -27,6 +27,16 @@ namespace UnitTests.GameSetupTest
 			var mockDice = new Mock<IDiceService>();
 			mockDice.Setup(d => d.Roll()).Returns(() => diceRolls.Dequeue());
 
+			mockDice.SetupProperty(x => x.lastRoll, 4);
+
+			int capturedValue = 0;
+
+			mockDice.Setup(x => x.Roll())
+				.Callback(() => capturedValue = new Random().Next(1, 7))
+				.Returns(() => capturedValue);
+
+
+
 			IGameSetupService gameSetupService = new GameSetupService(mockDice.Object);
 
 			var players = new List<Player>
