@@ -24,12 +24,12 @@ public class Program
         builder.Services.AddSwaggerGen();
 
         //Services
-        builder.Services.AddScoped<IPlayerService, PlayerService>();
-        builder.Services.AddScoped<IDiceService, DiceService>();
-        builder.Services.AddScoped<IPieceService, PieceService>();
-        builder.Services.AddScoped<IGameManagerService, GameManager>();
-        builder.Services.AddScoped<IBoardService, BoardService>();
-        builder.Services.AddScoped<IGameSetupService, GameSetupService>();
+        builder.Services.AddSingleton<IPlayerService, PlayerService>();
+        builder.Services.AddSingleton<IDiceService, DiceService>();
+        builder.Services.AddSingleton<IPieceService, PieceService>();
+        builder.Services.AddSingleton<IGameManagerService, GameManager>();
+        builder.Services.AddSingleton<IBoardService, BoardService>();
+        builder.Services.AddSingleton<IGameSetupService, GameSetupService>();
 
         var app = builder.Build();
 

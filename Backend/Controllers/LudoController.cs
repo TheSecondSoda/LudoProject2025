@@ -8,21 +8,30 @@ namespace Backend.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class LudoController(IGameManagerService gameManager, ILogger<LudoController> logger) : ControllerBase
+	public class LudoController : ControllerBase
 	{
+		private IGameManagerService GameManager { get; }
+		private ILogger<LudoController> Logger { get; }
+
+		public LudoController(IGameManagerService gameManager, ILogger<LudoController> logger)
+		{
+			GameManager = gameManager;
+			Logger = logger;
+		}
+
 		[HttpGet("FindValidMoves")]
 		public async Task<IActionResult> FindValidMoves(int diceroll)
 		{
 			try
 			{
-				gameManager.Roll(diceroll);
-				var resultValue = gameManager.GetMovablePieces();
+				GameManager.Roll(diceroll);
+				var resultValue = GameManager.GetMovablePieces();
 
 				return new OkObjectResult(resultValue);
 			}
 			catch (Exception ex)
 			{
-				logger.LogError(ex, "Error");
+				Logger.LogError(ex, "Error");
 				return new BadRequestObjectResult("An exception occurred, please check logs");
 			}
 		}
@@ -32,7 +41,7 @@ namespace Backend.Controllers
 		{
 			try
 			{
-				var affectedPieces = gameManager.MovePiece(pieceID);
+				var affectedPieces = GameManager.MovePiece(pieceID);
 
 				var resultValue = from p in affectedPieces
 								  select new PieceDTO()
@@ -47,7 +56,7 @@ namespace Backend.Controllers
 			}
 			catch (Exception ex)
 			{
-				logger.LogError(ex, "Error");
+				Logger.LogError(ex, "Error");
 				return new BadRequestObjectResult("An exception occurred, please check logs");
 			}
 		}
@@ -57,8 +66,8 @@ namespace Backend.Controllers
 		{
 			try
 			{
-				gameManager.CreateNewGame(PlayerNumber, BoardSize, 6);
-				var playersInOrder = gameManager.RollForPlayerOrder();
+				GameManager.CreateNewGame(PlayerNumber, BoardSize, 6);
+				var playersInOrder = GameManager.RollForPlayerOrder();
 
 				var resultValue = from p in playersInOrder
 								  select new PlayerDTO()
@@ -73,14 +82,14 @@ namespace Backend.Controllers
 												   PosIndex = piece.PosIndex,
 												   IsInPlay = piece.IsInPlay,
 												   IsFinished = piece.IsFinished
-											   })
+											   }).ToList()
 								  };
 
 				return new OkObjectResult(resultValue);
 			}
 			catch (Exception ex)
 			{
-				logger.LogError(ex, "Error");
+				Logger.LogError(ex, "Error");
 				return new BadRequestObjectResult("An exception occurred, please check logs");
 			}
 		}
@@ -90,12 +99,12 @@ namespace Backend.Controllers
 		{
 			try
 			{
-				var nextPlayer = gameManager.NextTurn();
+				var nextPlayer = GameManager.NextTurn();
 				return new OkObjectResult(nextPlayer);
 			}
 			catch (Exception ex)
 			{
-				logger.LogError(ex, "Error");
+				Logger.LogError(ex, "Error");
 				return new BadRequestObjectResult("An exception occurred, please check logs");
 			}
 		}
