@@ -13,5 +13,6 @@ namespace Backend.Services.GameManagerService
         List<Piece> MovePiece(Guid pieceId);
         bool CanRollAgain();
         Guid NextTurn();
+        Player GetCurrentPlayer();
     }
 }

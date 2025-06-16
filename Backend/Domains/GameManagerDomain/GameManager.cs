@@ -8,6 +8,7 @@ using Backend.Domains.BoardDomain;
 using Backend.Services.DiceServices.Interfaces;
 using Backend.Services.GameSetupService.Interfaces;
 using Backend.Services.PlayerServices.Interfaces;
+using Backend.Services.GameRulesService;
 
 
 namespace Backend.Domains.GameManagerDomain
@@ -18,34 +19,24 @@ namespace Backend.Domains.GameManagerDomain
         private List<Player> Players { get; set; } = new List<Player>();
         private Player CurrentPlayer { get; set; }
         private int rollsTaken = 0;
+        private bool movedPiece;
 
         private readonly IGameSetupService gameSetupService;
         private readonly IPlayerService playerService;
+        private readonly IGameRulesService gameRulesService;
 
-        public GameManager(IGameSetupService gameSetupService, IPlayerService playerService)
+        public GameManager(IGameSetupService gameSetupService, IPlayerService playerService, IGameRulesService gameRulesService)
         {
             this.gameSetupService = gameSetupService;
             this.playerService = playerService;
+            this.gameRulesService = gameRulesService;
         }
 
         // Step 1 Create board
         public (Board Board, List<Player> Players) CreateNewGame(int playerCount, int boardSize, int lengthOfColourZone)
         {
-            this.AddPlayers(playerCount);
-            var colours = Players.Select(p => p.Colour).ToList();
-            var pieces = Players.SelectMany(p => p.Pieces).ToList();
-            this.Board = new Board(boardSize, lengthOfColourZone, colours, pieces);    
-            Players.ForEach(a => a.StartTile = Board.GetStartTile(a.Colour));
+            (Board, Players) = gameSetupService.CreateNewGame(playerCount, boardSize, lengthOfColourZone);
             return (this.Board, this.Players);
-        }
-
-        private void AddPlayers(int playerCount)
-        {
-            for (int i = 0; i < playerCount; i++)
-            {
-                var color = (ColourEnum)(i + 1);
-                this.Players.Add(new Player(color));
-            }
         }
 
         // Step 2 Roll for player order
@@ -75,24 +66,24 @@ namespace Backend.Domains.GameManagerDomain
         // Step 5 Move piece
         public List<Piece> MovePiece(Guid pieceId)
         {
+            movedPiece = true;
             return Board.MovePiece(pieceId, CurrentPlayer.Colour,CurrentPlayer.LastRoll);
         }
 
         // Step 6 Check if current player can roll again due to 6'er rule or no pieces in play rule
         public bool CanRollAgain()
         {
-            if (CurrentPlayer.LastRoll == 6)
-                return true;
-
-            if (!playerService.AnyPiecesInPlay(CurrentPlayer) && rollsTaken < 3)
-                return true;
-
-            return false;
+            return gameRulesService.CanRollAgain(CurrentPlayer, rollsTaken, Board, movedPiece); 
         }
 
         // Step 7 End turn
         public Guid NextTurn()
         {
+            if (CanRollAgain())
+            {
+                return CurrentPlayer.Id;
+            }
+
             // Move on to the next player and reset the roll
             int index = Players.IndexOf(CurrentPlayer);
             do
@@ -101,10 +92,17 @@ namespace Backend.Domains.GameManagerDomain
                 CurrentPlayer = Players[index];
             } while (playerService.HasFinished(CurrentPlayer));
 
+            movedPiece = false;
             rollsTaken = 0;
             this.CurrentPlayer.LastRoll = 0;
 
             return CurrentPlayer.Id;
+        }
+
+        // Support method, currently used during reqnroll
+        public Player GetCurrentPlayer()
+        {
+            return CurrentPlayer;
         }
     } 
 }

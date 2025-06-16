@@ -1,6 +1,10 @@
-﻿using Backend.Domains.PlayerDomain;
+﻿using Backend.Domains.BoardDomain;
+using Backend.Domains.PieceDomain;
+using Backend.Domains.PlayerDomain;
 using Backend.Services.DiceServices.Interfaces;
 using Backend.Services.GameSetupService.Interfaces;
+using Common.Enums;
+using System.Drawing;
 
 namespace Backend.Services.GameSetupService
 {
@@ -32,7 +36,8 @@ namespace Backend.Services.GameSetupService
 			return orderedPlayers;
 		}
 
-		Player RollForFirstPlayer(List<Player> players)
+
+		private Player RollForFirstPlayer(List<Player> players)
 		{
 			Player result = null;
 			var playersWithRolls = RollDieForEachPlayer(players);
@@ -50,7 +55,7 @@ namespace Backend.Services.GameSetupService
 			return result;
 		}
 
-		List<(Player player, int diceValue)> RollDieForEachPlayer(List<Player> players)
+		private List<(Player player, int diceValue)> RollDieForEachPlayer(List<Player> players)
 		{
 			// Roll a die for each player
 			var result = new List<(Player player, int diceValue)>();
@@ -62,5 +67,26 @@ namespace Backend.Services.GameSetupService
 			}
 			return result;
 		}
-	}
+
+        public List<Player> AddPlayers(int playerCount)
+        {
+            var players = new List<Player>();
+            for (int i = 0; i < playerCount; i++)
+            {
+                var color = (ColourEnum)(i + 1);
+                players.Add(new Player(color));
+            }
+            return players;
+        }
+
+        public (Board Board, List<Player> Players) CreateNewGame(int playerCount, int boardSize, int lengthOfColorZone)
+		{
+			var players = AddPlayers(playerCount);
+			var colors = players.Select(p => p.Colour).ToList();
+            var pieces = players.SelectMany(p => p.Pieces).ToList();
+            var board = new Board(boardSize, lengthOfColorZone, colors, pieces);
+            players.ForEach(a => a.StartTile = board.GetStartTile(a.Colour));
+			return (board, players);
+        }
+    }
 }

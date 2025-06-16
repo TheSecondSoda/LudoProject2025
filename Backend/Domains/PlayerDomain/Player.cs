@@ -10,7 +10,6 @@ namespace Backend.Domains.PlayerDomain
         public Guid Id { get; init; }
         public ColourEnum Colour { get; init; }
         public List<Piece> Pieces { get; init; } = new();
-        public bool IsTurn { get; set; }
         public PosIndex? StartTile { get; set; }
         public int LastRoll { get; set; } = 0;
 
@@ -28,7 +27,6 @@ namespace Backend.Domains.PlayerDomain
 
             Id = Guid.NewGuid();
             Colour = colour;
-            IsTurn = false;
             StartTile = null;
         }
     }

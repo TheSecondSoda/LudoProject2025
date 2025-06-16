@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "..\UnitTests\U
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frontend", "..\Frontend\Frontend.csproj", "{039B5B1E-C5CF-43AE-BEA3-B92484ABFA9C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReqnrollBackend", "..\ReqnrollBackend\ReqnrollBackend.csproj", "{DD5F6B4F-C3B7-4A1C-8E85-69C008A1998B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{039B5B1E-C5CF-43AE-BEA3-B92484ABFA9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{039B5B1E-C5CF-43AE-BEA3-B92484ABFA9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{039B5B1E-C5CF-43AE-BEA3-B92484ABFA9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD5F6B4F-C3B7-4A1C-8E85-69C008A1998B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD5F6B4F-C3B7-4A1C-8E85-69C008A1998B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD5F6B4F-C3B7-4A1C-8E85-69C008A1998B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD5F6B4F-C3B7-4A1C-8E85-69C008A1998B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

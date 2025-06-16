@@ -35,7 +35,6 @@ namespace UnitTests.PlayerTests
                 player.Colour.Should().Be(colour);
                 player.Pieces.Should().HaveCount(4);
                 player.Pieces.All(p => p.Colour == colour).Should().BeTrue();
-                player.IsTurn.Should().Be(expectedIsTurn);
                 player.StartTile.Should().Be(expectedStartTile);
             }
             else
@@ -53,18 +52,6 @@ namespace UnitTests.PlayerTests
             act.Should().Throw<Exception>()
                 .WithMessage("A player must have a valid colour");
         }
-
-        // Test om der er minimum 4 brikker for for en spiller
-        //[Fact]
-        //public void TestPlayer_InvalidNumberOfPieces()
-        //{
-        //    var pieces = new List<Piece> { new Piece(ColourEnum.Red) };
-
-        //    Action act = () => new Player(1, ColourEnum.Red, pieces);
-
-        //    act.Should().Throw<Exception>()
-        //        .WithMessage("A player must have 4 pieces");
-        //}
 
         // Test om brikker kan flyttes ud
         [Fact]

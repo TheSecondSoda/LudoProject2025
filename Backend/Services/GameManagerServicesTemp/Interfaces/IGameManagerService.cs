@@ -15,3 +15,4 @@ namespace Backend.Services.GameManagerServicesTemp.Interfaces
 		Guid NextTurn();
 	}
 }
+  

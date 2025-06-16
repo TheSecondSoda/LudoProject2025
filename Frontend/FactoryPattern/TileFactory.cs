@@ -4,12 +4,13 @@ using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
+using Common.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
 namespace Frontend.FactoryPattern
 {
-    public enum TileColor{ None, Red, Blue,Green,Yellow}
+ 
     public class TileFactory : Factory
     {
 
@@ -41,19 +42,23 @@ namespace Frontend.FactoryPattern
 
             switch (type)
             {
-                case TileColor.Green:
+                case ColourEnum.Green:
                     sr.SetSprite("Box", 0, tileScale, Color.Green,content);
                     break;
 
-                case TileColor.Blue:
+                case ColourEnum.Blue:
                     sr.SetSprite("Box", 0, tileScale,Color.Blue,content);
                  break;
 
-                case TileColor.Red:
+                case ColourEnum.Red:
                     sr.SetSprite("Box", 0, tileScale, Color.Red,content);
                     break;
 
-                case TileColor.None:
+                case ColourEnum.Yellow:
+                    sr.SetSprite("Box", 0, tileScale, Color.Yellow, content);
+                    break;
+
+                case ColourEnum.None:
                     sr.SetSprite("Box", 0, tileScale, Color.White,content);
                     break;
 

@@ -10,7 +10,8 @@ namespace Common.DTOs
 	public class PieceDTO
 	{
 		public Guid ID { get; init; }
-		public PosIndex? PosIndex { get; init; }
+        public ColourEnum Colour { get; init; }
+        public PosIndex? PosIndex { get; init; }
 		public bool IsInPlay { get; init; }
 		public bool IsFinished { get; init; }
 	}
