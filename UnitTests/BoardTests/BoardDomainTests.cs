@@ -1,27 +1,31 @@
 ﻿using Backend.Domains.BoardDomain;
 using Backend.Domains.PieceDomain;
 using Common.Enums;
+using FluentAssertions;
 
 namespace UnitTests.BoardTests
 {
     public class BoardDomainTests
     {
-        [Fact]
-        public void Schould_get_a_board_object()
+        [Theory]
+        [MemberData(nameof(Should_get_data))]
+        public void Schould_get_a_board_with_all_the_things(int length, int zoneLength, List<ColourEnum> playerColours)
         {
-            //Arange
-            int length = 52;
-            int zoneLength = 6;
-            List<ColourEnum> players = new List<ColourEnum>() { ColourEnum.Red, ColourEnum.Blue, ColourEnum.Green, ColourEnum.Yellow };
-
             //Act
-            var result = new Board(length, zoneLength, players, new List<Piece>());
+            var result = new Board(length, zoneLength, playerColours, new List<Piece>());
 
             //Assert
-            Assert.Equal(length, result.Tiles.Count);
-            Assert.Equal(players.Count, result.PlayerZones.Count);
-            Assert.True(result.PlayerZones.Values.All(x => x.Count == zoneLength));
-            Assert.True(result.PlayerZones.Values.All(x => x.Last().IsGoalTile == true));
+            result.Tiles.Should().HaveCount(length);
+            result.PlayerZones.Should().HaveCount(playerColours.Count);
+            result.PlayerZones.Values.Should().AllSatisfy(x => x.Should().HaveCount(zoneLength));
+            result.PlayerZones.Values.Should().AllSatisfy(x => x.Last().IsGoalTile.Should().BeTrue());
+        }
+
+        public static IEnumerable<object[]> Should_get_data()
+        {
+            yield return new object[] { 40, 6, new List<ColourEnum> { ColourEnum.Red, ColourEnum.Blue } };
+            yield return new object[] { 60, 8, new List<ColourEnum> { ColourEnum.Red, ColourEnum.Blue, ColourEnum.Green } };
+            yield return new object[] { 80, 11, new List<ColourEnum> { ColourEnum.Red, ColourEnum.Blue, ColourEnum.Green, ColourEnum.Yellow } };
         }
 
     }
